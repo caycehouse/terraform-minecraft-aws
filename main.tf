@@ -22,6 +22,7 @@ module "security_groups" {
 
 module "server" {
   source = "./modules/spot-instance"
+  availability_zone = var.availability_zone
   instance_type = var.instance_type
   security_groups = module.security_groups.minecraft_security_groups
   subnet_id = module.network.minecraft_subnet

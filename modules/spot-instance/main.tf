@@ -9,6 +9,12 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+resource "aws_ebs_volume" "minecraft_ebs" {
+  availability_zone = var.availability_zone
+  size              = var.volume_size
+  type = var.volume_type
+}
+
 resource "aws_spot_instance_request" "minecraft_instance" {
     ami = data.aws_ami.amazon_linux_2.id
     instance_type = var.instance_type
@@ -18,14 +24,13 @@ resource "aws_spot_instance_request" "minecraft_instance" {
     wait_for_fulfillment = true
     spot_type = "persistent"
     secondary_private_ips = []
-    ebs_block_device {
-        delete_on_termination = false
-        volume_type = var.volume_type
-        volume_size = var.volume_size
-        device_name = "/dev/sdb"
-    }
     user_data = var.user_data
     iam_instance_profile = var.iam_instance_profile
     instance_interruption_behaviour = "stop"
 }
 
+resource "aws_volume_attachment" "minecraft_ebs_att" {
+  device_name = "/dev/sdb"
+  volume_id   = aws_ebs_volume.minecraft_ebs.id
+  instance_id = aws_spot_instance_request.minecraft_instance.id
+}

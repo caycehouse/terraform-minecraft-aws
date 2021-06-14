@@ -1,3 +1,4 @@
+variable "availability_zone"  {}
 variable "instance_type" {}
 variable "volume_size" {}
 variable "volume_type" {}
