@@ -20,14 +20,19 @@ module "security_groups" {
   vpc_id  = module.network.minecraft_vpc
 }
 
+module "storage" {
+  source = "./modules/storage"
+  availability_zone = var.availability_zone
+  volume_size = var.volume_size
+  volume_type = var.volume_type
+}
+
 module "server" {
   source = "./modules/spot-instance"
-  availability_zone = var.availability_zone
   instance_type = var.instance_type
   security_groups = module.security_groups.minecraft_security_groups
   subnet_id = module.network.minecraft_subnet
-  volume_size = var.volume_size
-  volume_type = var.volume_type
+  volume_id = module.storage.minecraft_volume
 }
 
 resource "aws_route53_zone" "primary" {

@@ -1,7 +1,5 @@
-variable "availability_zone"  {}
 variable "instance_type" {}
-variable "volume_size" {}
-variable "volume_type" {}
+variable "volume_id" {}
 variable "subnet_id" {}
 variable "security_groups"  {}
 variable "iam_instance_profile" {

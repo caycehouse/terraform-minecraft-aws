@@ -9,12 +9,6 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
-resource "aws_ebs_volume" "minecraft_ebs" {
-  availability_zone = var.availability_zone
-  size              = var.volume_size
-  type = var.volume_type
-}
-
 resource "aws_spot_instance_request" "minecraft_instance" {
     ami = data.aws_ami.amazon_linux_2.id
     instance_type = var.instance_type
@@ -31,6 +25,6 @@ resource "aws_spot_instance_request" "minecraft_instance" {
 
 resource "aws_volume_attachment" "minecraft_ebs_att" {
   device_name = "/dev/sdb"
-  volume_id   = aws_ebs_volume.minecraft_ebs.id
+  volume_id   = var.volume_id
   instance_id = aws_spot_instance_request.minecraft_instance.id
 }
