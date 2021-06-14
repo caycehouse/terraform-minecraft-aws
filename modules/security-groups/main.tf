@@ -1,54 +1,12 @@
-resource "aws_security_group" "valheim_sg_game" {
-  name        = "Allow Valheim Ports"
-  description = "Allow Valheim Ports"
+resource "aws_security_group" "minecraft_sg_game" {
+  name        = "Allow Minecraft Ports"
+  description = "Allow Minecraft Ports"
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 2456
-    to_port     = 2458
+    from_port   = 25565
+    to_port     = 25565
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 27015
-    to_port     = 27030
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 27036
-    to_port     = 27037
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 2456
-    to_port     = 2458
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 4380
-    to_port     = 4380
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 27000
-    to_port     = 27031
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 27036
-    to_port     = 27036
-    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -60,7 +18,7 @@ resource "aws_security_group" "valheim_sg_game" {
   }
 }
 
-resource "aws_security_group" "valheim_sg_ssh" {
+resource "aws_security_group" "minecraft_sg_ssh" {
   name        = "Secure Shell"
   description = "SSH Communication"
   vpc_id      = var.vpc_id
@@ -69,7 +27,7 @@ resource "aws_security_group" "valheim_sg_ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.your_ip
+    cidr_blocks = [var.your_ip]
   }
 
   egress {

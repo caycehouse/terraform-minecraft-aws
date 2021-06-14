@@ -17,14 +17,14 @@ module "network" {
 module "security_groups" {
   source  = "./modules/security-groups"
   your_ip = var.your_ip
-  vpc_id  = module.network.valheim_vpc
+  vpc_id  = module.network.minecraft_vpc
 }
 
 module "server" {
   source = "./modules/spot-instance"
   instance_type = var.instance_type
-  security_groups = module.security_groups.valheim_security_groups
-  subnet_id = module.network.valheim_subnet
+  security_groups = module.security_groups.minecraft_security_groups
+  subnet_id = module.network.minecraft_subnet
   volume_size = var.volume_size
   volume_type = var.volume_type
 }

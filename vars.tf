@@ -18,7 +18,7 @@ variable "availability_zone" {
 variable "instance_type" {
   description = "Instance type to use"
   type        = string
-  default     = "c5.large"
+  default     = "m5.large"
 }
 
 variable "volume_size" {

@@ -1,7 +1,7 @@
-output "valheim_vpc" {
-  value = aws_vpc.valheim_vpc.id
+output "minecraft_vpc" {
+  value = aws_vpc.minecraft_vpc.id
 }
 
-output "valheim_subnet" {
-  value = aws_subnet.valheim_subnet.id
+output "minecraft_subnet" {
+  value = aws_subnet.minecraft_subnet.id
 }
