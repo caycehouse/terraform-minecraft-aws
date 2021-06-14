@@ -9,6 +9,10 @@ terraform {
   required_version = ">= 1.0.0"
 }
 
+module "iam" {
+  source = "./modules/iam"
+}
+
 module "network" {
   source = "./modules/network"
   availability_zone = var.availability_zone
@@ -25,6 +29,7 @@ module "storage" {
   availability_zone = var.availability_zone
   volume_size = var.volume_size
   volume_type = var.volume_type
+  dlm_iam = module.iam.minecraft_dlm_iam
 }
 
 module "server" {
