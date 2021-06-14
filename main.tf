@@ -43,3 +43,12 @@ module "server" {
 resource "aws_route53_zone" "primary" {
   name = var.route53_name
 }
+
+module "lambdas" {
+  source = "./modules/lambdas"
+  hosted_zone_id = aws_route53_zone.primary.zone_id
+  record_name = var.record_name
+  instance_id = module.server.minecraft_instance
+  lambda_dns_iam = module.iam.minecraft_lambda_dns_iam
+  lambda_startstop_iam = module.iam.minecraft_lambda_startstop_iam
+}

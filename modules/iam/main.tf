@@ -49,3 +49,43 @@ resource "aws_iam_role_policy" "dlm_lifecycle" {
 }
 EOF
 }
+
+resource "aws_iam_role" "minecraft_iam_for_dns_lambda" {
+  name = "minecraft_iam_for_dns_lambda"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role" "minecraft_iam_for_startstop_lambda" {
+  name = "minecraft_iam_for_startstop_lambda"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}

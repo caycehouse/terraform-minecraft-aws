@@ -4,6 +4,12 @@ variable "route53_name" {
   default     = "example.com"
 }
 
+variable "record_name" {
+  description = "The dns record to update on start"
+  type        = string
+  default     = "mc.example.com"
+}
+
 variable "your_ip" {
   description = "This must be your public facing IP so you can SSH to your linux machine."
   default     = ["0.0.0.0/0"]
