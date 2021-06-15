@@ -1,3 +1,0 @@
-route53_name = "example.com"
-your_ip = "1.1.1.1"
-availability_zone = "us-east-1a"
