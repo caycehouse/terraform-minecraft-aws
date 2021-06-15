@@ -11,7 +11,7 @@ terraform {
 
 module "iam" {
   source = "./modules/iam"
-  hosted_zone_id = var.hosted_zone_id
+  hosted_zone_id = aws_route53_zone.primary.zone_id
   instance_arn = module.server.minecraft_instance.arn
 }
 

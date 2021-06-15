@@ -72,7 +72,7 @@ EOF
 
 resource "aws_iam_role_policy" "minecraft_iam_policy_for_dns_lambda" {
   name = "minecraft_dns_lambda_policy"
-  role = aws_iam_role.dlm_lifecycle_role.id
+  role = aws_iam_role.minecraft_iam_for_dns_lambda.id
 
   policy = <<EOF
 {
@@ -115,9 +115,9 @@ resource "aws_iam_role" "minecraft_iam_for_startstop_lambda" {
 EOF
 }
 
-resource "aws_iam_role_policy" "dlm_lifecycle" {
-  name = "dlm-lifecycle-policy"
-  role = aws_iam_role.dlm_lifecycle_role.id
+resource "aws_iam_role_policy" "minecraft_iam_policy_for_startstop_lambda" {
+  name = "minecraft_startstop_lambda_policy"
+  role = aws_iam_role.minecraft_iam_for_startstop_lambda.id
 
   policy = <<EOF
 {
