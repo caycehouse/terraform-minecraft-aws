@@ -1,7 +1,7 @@
-variable "route53_name" {
-  description = "Value of the Name tag for the Route53 zone"
+variable "hosted_zone_id" {
+  description = "Value of the Hosted Zone ID for the Route53 zone"
   type        = string
-  default     = "example.com"
+  default     = "Zxxxxxxxxxxxxxxxx"
 }
 
 variable "record_name" {

@@ -38,7 +38,7 @@ resource "aws_cloudwatch_event_target" "minecraft_event_target" {
 
 resource "aws_cloudwatch_event_rule" "minecraft_event_rule" {
   name = "minecraft_instance_start_dns"
-  description = "Sets the Route53 DNS entry when the minecraft server starts"
+  description = "Sets the Route53 DNS entry when the minecraft server starts."
 
 event_pattern = <<EOF
 {

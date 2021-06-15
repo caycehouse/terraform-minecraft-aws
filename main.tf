@@ -11,8 +11,8 @@ terraform {
 
 module "iam" {
   source = "./modules/iam"
-  hosted_zone_id = aws_route53_zone.primary.zone_id
-  instance_arn = module.server.minecraft_instance.arn
+  hosted_zone_id = var.hosted_zone_id
+  instance_id = module.server.minecraft_instance.spot_instance_id
 }
 
 module "network" {
@@ -42,15 +42,11 @@ module "server" {
   volume_id = module.storage.minecraft_volume
 }
 
-resource "aws_route53_zone" "primary" {
-  name = var.route53_name
-}
-
 module "lambdas" {
   source = "./modules/lambdas"
-  hosted_zone_id = aws_route53_zone.primary.zone_id
+  hosted_zone_id = var.hosted_zone_id
   record_name = var.record_name
-  instance_id = module.server.minecraft_instance.id
+  instance_id = module.server.minecraft_instance.spot_instance_id
   lambda_dns_iam = module.iam.minecraft_lambda_dns_iam
   lambda_startstop_iam = module.iam.minecraft_lambda_startstop_iam
 }

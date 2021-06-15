@@ -3,13 +3,13 @@ resource "aws_ebs_volume" "minecraft_ebs" {
   size              = var.volume_size
   type = var.volume_type
   tags = {
-    dlmsnapshotpolicyHourly = "Yes"
-    dlmsnapshotpolicyDaily = "Yes"
+    mcdlmsnapshotpolicyHourly = "Yes"
+    mcdlmsnapshotpolicyDaily = "Yes"
   }
 }
 
 resource "aws_dlm_lifecycle_policy" "minecraft_hourly_dlm" {
-  description        = "Hourly DLM lifecycle policy"
+  description        = "Minecraft HourlyDLM"
   execution_role_arn = var.dlm_iam
   state              = "ENABLED"
 
@@ -35,13 +35,13 @@ resource "aws_dlm_lifecycle_policy" "minecraft_hourly_dlm" {
     }
 
     target_tags = {
-      dlmsnapshotpolicyHourly = "Yes"
+      mcdlmsnapshotpolicyHourly = "Yes"
     }
   }
 }
 
 resource "aws_dlm_lifecycle_policy" "minecraft_daily_dlm" {
-  description        = "Daily DLM lifecycle policy"
+  description        = "Minecraft DailyDLM"
   execution_role_arn = var.dlm_iam
   state              = "ENABLED"
 
@@ -67,7 +67,7 @@ resource "aws_dlm_lifecycle_policy" "minecraft_daily_dlm" {
     }
 
     target_tags = {
-      dlmsnapshotpolicyDaily = "Yes"
+      mcdlmsnapshotpolicyDaily = "Yes"
     }
   }
 }

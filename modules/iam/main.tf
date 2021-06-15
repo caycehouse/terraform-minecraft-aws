@@ -1,5 +1,6 @@
 resource "aws_iam_role" "dlm_lifecycle_role" {
-  name = "dlm_lifecycle_role"
+  name = "mc_dlm_lifecycle_role"
+  description = "Allow Data Lifecycle Manager to create and manage AWS resources on your behalf."
 
   assume_role_policy = <<EOF
 {
@@ -18,40 +19,14 @@ resource "aws_iam_role" "dlm_lifecycle_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "dlm_lifecycle" {
-  name = "dlm_lifecycle_policy"
-  role = aws_iam_role.dlm_lifecycle_role.id
-
-  policy = <<EOF
-{
-   "Version": "2012-10-17",
-   "Statement": [
-      {
-         "Effect": "Allow",
-         "Action": [
-            "ec2:CreateSnapshot",
-            "ec2:CreateSnapshots",
-            "ec2:DeleteSnapshot",
-            "ec2:DescribeInstances",
-            "ec2:DescribeVolumes",
-            "ec2:DescribeSnapshots"
-         ],
-         "Resource": "*"
-      },
-      {
-         "Effect": "Allow",
-         "Action": [
-            "ec2:CreateTags"
-         ],
-         "Resource": "arn:aws:ec2:*::snapshot/*"
-      }
-   ]
-}
-EOF
+resource "aws_iam_role_policy_attachment" "dlm_lifecycle_policy_attachment" {
+  role = aws_iam_role.dlm_lifecycle_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSDataLifecycleManagerServiceRole"
 }
 
 resource "aws_iam_role" "minecraft_iam_for_dns_lambda" {
   name = "minecraft_iam_for_dns_lambda"
+  description = "Allows Lambda functions to call AWS services on your behalf."
 
   assume_role_policy = <<EOF
 {
@@ -70,7 +45,7 @@ resource "aws_iam_role" "minecraft_iam_for_dns_lambda" {
 EOF
 }
 
-resource "aws_iam_role_policy" "minecraft_iam_policy_for_dns_lambda" {
+resource "aws_iam_role_policy" "minecraft_dns_lambda_policy" {
   name = "minecraft_dns_lambda_policy"
   role = aws_iam_role.minecraft_iam_for_dns_lambda.id
 
@@ -97,6 +72,7 @@ EOF
 
 resource "aws_iam_role" "minecraft_iam_for_startstop_lambda" {
   name = "minecraft_iam_for_startstop_lambda"
+  description = "Allows Lambda functions to call AWS services on your behalf."
 
   assume_role_policy = <<EOF
 {
@@ -115,7 +91,11 @@ resource "aws_iam_role" "minecraft_iam_for_startstop_lambda" {
 EOF
 }
 
-resource "aws_iam_role_policy" "minecraft_iam_policy_for_startstop_lambda" {
+data "aws_instance" "minecraft_instance" {
+  instance_id = var.instance_id
+}
+
+resource "aws_iam_role_policy" "minecraft_startstop_lambda_policy" {
   name = "minecraft_startstop_lambda_policy"
   role = aws_iam_role.minecraft_iam_for_startstop_lambda.id
 
@@ -130,7 +110,7 @@ resource "aws_iam_role_policy" "minecraft_iam_policy_for_startstop_lambda" {
                 "ec2:StartInstances",
                 "ec2:StopInstances"
             ],
-            "Resource": "${var.instance_arn}"
+            "Resource": "${data.aws_instance.minecraft_instance.arn}"
         }
     ]
 }
