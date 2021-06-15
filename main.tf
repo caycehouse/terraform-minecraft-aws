@@ -7,6 +7,24 @@ terraform {
   }
 
   required_version = ">= 1.0.0"
+    backend "remote" {
+    hostname      = "app.terraform.io"
+    organization  = "mobilemedics"
+
+    workspaces {
+      name = "terraform-minecraft-aws"
+    }
+  }
+}
+
+provider "aws" {
+  profile = "default"
+  region = "us-east-1"
+  default_tags {
+    tags = {
+      Application = "Minecraft"
+    }
+  }
 }
 
 module "iam" {
