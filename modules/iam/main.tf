@@ -1,5 +1,5 @@
 resource "aws_iam_role" "dlm_lifecycle_role" {
-  name = "dlm-lifecycle-role"
+  name = "dlm_lifecycle_role"
 
   assume_role_policy = <<EOF
 {
@@ -19,7 +19,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "dlm_lifecycle" {
-  name = "dlm-lifecycle-policy"
+  name = "dlm_lifecycle_policy"
   role = aws_iam_role.dlm_lifecycle_role.id
 
   policy = <<EOF
@@ -70,6 +70,31 @@ resource "aws_iam_role" "minecraft_iam_for_dns_lambda" {
 EOF
 }
 
+resource "aws_iam_role_policy" "minecraft_iam_policy_for_dns_lambda" {
+  name = "minecraft_dns_lambda_policy"
+  role = aws_iam_role.dlm_lifecycle_role.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "ec2:DescribeInstances",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "route53:ChangeResourceRecordSets",
+            "Resource": "arn:aws:route53:::hostedzone/${var.hosted_zone_id}"
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_role" "minecraft_iam_for_startstop_lambda" {
   name = "minecraft_iam_for_startstop_lambda"
 
@@ -86,6 +111,28 @@ resource "aws_iam_role" "minecraft_iam_for_startstop_lambda" {
       "Sid": ""
     }
   ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "dlm_lifecycle" {
+  name = "dlm-lifecycle-policy"
+  role = aws_iam_role.dlm_lifecycle_role.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "${var.instance_arn}"
+        }
+    ]
 }
 EOF
 }
