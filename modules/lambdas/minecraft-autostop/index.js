@@ -6,7 +6,7 @@ exports.handler = function (event, context) {
     const instanceId = process.env.instance_id;
     const recordName = process.env.record_name;
 
-    http.get(`http://${recordName}/status.json`, res => {
+    http.get(`https://api.mcsrvstat.us/2/${recordName}`, res => {
         res.setEncoding("utf8");
         let body = "";
         res.on("data", data => {
@@ -14,7 +14,7 @@ exports.handler = function (event, context) {
         });
         res.on("end", () => {
             body = JSON.parse(body);
-            if (body.player_count === 0) {
+            if (body.players.online === 0) {
                 var params = {
                     InstanceIds: [
                         instanceId
