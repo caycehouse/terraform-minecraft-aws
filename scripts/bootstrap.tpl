@@ -27,4 +27,4 @@ docker run -d \
     -e MEMORY="6144M" \
     -e TYPE="SPIGOT" \
     -e USE_AIKAR_FLAGS="TRUE" \
-    lloesche/minecraft-server
+    itzg/minecraft-server
