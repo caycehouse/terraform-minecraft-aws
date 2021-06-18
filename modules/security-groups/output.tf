@@ -1,3 +1,3 @@
-output "minecraft_security_groups" {
-    value = [aws_security_group.minecraft_sg.id]
+output "security_group_id" {
+    value = module.minecraft_sg.security_group_id
 }

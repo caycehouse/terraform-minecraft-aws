@@ -1,7 +1,7 @@
 output "minecraft_vpc" {
-  value = aws_vpc.minecraft_vpc.id
+  value = module.vpc.vpc_id
 }
 
 output "minecraft_subnet" {
-  value = aws_subnet.minecraft_subnet.id
+  value = module.vpc.public_subnets[0]
 }

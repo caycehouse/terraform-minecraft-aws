@@ -38,3 +38,21 @@ variable "volume_type" {
   type        = string
   default     = "gp3"
 }
+
+variable "key_name" {
+  description = "SSH Keypair name to use"
+  type        = string
+  default     = ""
+}
+
+variable "minecraft_pass" {
+  description = "The password to use for the Minecraft server"
+  type        = string
+  default     = ""
+}
+
+variable "spot_price" {
+  description = "The spot price to use"
+  type        = string
+  default     = "0.05"
+}

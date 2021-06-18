@@ -1,53 +1,121 @@
-resource "aws_lambda_function" "minecraft_dns" {
-  filename      = "${path.module}/minecraft-dns/function.zip"
+data "aws_instance" "minecraft_instance" {
+  instance_id = var.instance_id
+}
+
+module "lambda_dns" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "2.4.0"
+
   function_name = "minecraft_dns"
-  role          = var.lambda_dns_iam
-  handler       = "index.handler"
-  source_code_hash = filebase64sha256("${path.module}/minecraft-dns/function.zip")
-
+  description = "Automatically updates route53 dns entryfor Minecraft on instance start"
+  handler = "index.handler"
   runtime = "nodejs14.x"
+  publish = true
 
-  environment {
-    variables = {
-      hosted_zone_id = var.hosted_zone_id
-      record_name = var.record_name
+  source_path = "${path.module}/minecraft-dns"
+
+  allowed_triggers = {
+    InstanceRunningRule = {
+      principal  = "events.amazonaws.com"
+      source_arn = var.eventbridge_dns_arn
     }
   }
-}
 
-resource "aws_lambda_function" "minecraft_startstop" {
-  filename      = "${path.module}/minecraft-startstop/function.zip"
-  function_name = "minecraft_startstop"
-  role          = var.lambda_startstop_iam
-  handler       = "index.handler"
-  source_code_hash = filebase64sha256("${path.module}/minecraft-startstop/function.zip")
-
-  runtime = "nodejs14.x"
-
-  environment {
-    variables = {
-      instance_id = var.instance_id
-    }
+  environment_variables = {
+    hosted_zone_id = var.hosted_zone_id
+    record_name = var.record_name
   }
-}
 
-resource "aws_cloudwatch_event_target" "minecraft_event_target" {
-  arn  = aws_lambda_function.minecraft_dns.arn
-  rule = aws_cloudwatch_event_rule.minecraft_event_rule.id
-}
-
-resource "aws_cloudwatch_event_rule" "minecraft_event_rule" {
-  name = "minecraft_instance_start_dns"
-  description = "Sets the Route53 DNS entry when the minecraft server starts."
-
-event_pattern = <<EOF
+  attach_policy_json = true
+  policy_json        = <<EOF
 {
-  "source": ["aws.ec2"],
-  "detail-type": ["EC2 Instance State-change Notification"],
-  "detail": {
-    "state": ["running"],
-    "instance-id": ["${var.instance_id}"]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "arn:aws:route53:::hostedzone/${var.hosted_zone_id}"
+    }
+  ]
+}
+EOF
+}
+
+module "lambda_start" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "2.4.0"
+
+  function_name = "minecraft_start"
+  description = "A start instance function for Minecraft"
+  handler = "index.handler"
+  runtime = "nodejs14.x"
+  publish = true
+
+  source_path = "${path.module}/minecraft-start"
+
+  environment_variables = {
+    instance_id = var.instance_id
   }
+
+  attach_policy_json = true
+  policy_json        = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:StartInstances"
+      ],
+      "Resource": "${data.aws_instance.minecraft_instance.arn}"
+    }
+  ]
+}
+EOF
+}
+
+module "lambda_autostop" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "2.4.0"
+
+  function_name = "minecraft_autostop"
+  description = "An auto-stop function for Minecraft"
+  handler = "index.handler"
+  runtime = "nodejs14.x"
+  publish = true
+
+  source_path = "${path.module}/minecraft-autostop"
+
+  allowed_triggers = {
+    ScheduledRule = {
+      principal  = "events.amazonaws.com"
+      source_arn = var.eventbridge_autostop_arn
+    }
+  }
+
+  environment_variables = {
+    instance_id = var.instance_id
+    record_name = var.record_name
+  }
+
+  attach_policy_json = true
+  policy_json        = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Resource": "${data.aws_instance.minecraft_instance.arn}"
+    }
+  ]
 }
 EOF
 }

@@ -55,9 +55,12 @@ module "storage" {
 module "server" {
   source = "./modules/spot-instance"
   instance_type = var.instance_type
-  security_groups = module.security_groups.minecraft_security_groups
+  security_groups = [module.security_groups.security_group_id]
   subnet_id = module.network.minecraft_subnet
   volume_id = module.storage.minecraft_volume
+  user_data = templatefile("./scripts/bootstrap.tpl", { minecraft_pass = var.minecraft_pass })
+  key_name = var.key_name
+  spot_price = var.spot_price
 }
 
 module "lambdas" {
@@ -65,6 +68,19 @@ module "lambdas" {
   hosted_zone_id = var.hosted_zone_id
   record_name = var.record_name
   instance_id = module.server.minecraft_instance.spot_instance_id
-  lambda_dns_iam = module.iam.minecraft_lambda_dns_iam
-  lambda_startstop_iam = module.iam.minecraft_lambda_startstop_iam
+  eventbridge_autostop_arn = module.eventbridges.eventbridge_autostop_arn
+  eventbridge_dns_arn = module.eventbridges.eventbridge_dns_arn
+}
+
+module "eventbridges" {
+  source = "./modules/eventbridges"
+  lambda_dns_arn = module.lambdas.lambda_dns_arn
+  lambda_autostop_arn = module.lambdas.lambda_autostop_arn
+  instance_id = module.server.minecraft_instance.spot_instance_id
+}
+
+module "route53" {
+  source = "./modules/route53"
+  hosted_zone_id = var.hosted_zone_id
+  instance_ip = module.server.minecraft_instance.public_ip
 }

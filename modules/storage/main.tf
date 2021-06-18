@@ -3,8 +3,8 @@ resource "aws_ebs_volume" "minecraft_ebs" {
   size              = var.volume_size
   type = var.volume_type
   tags = {
-    mcdlmsnapshotpolicyHourly = "Yes"
-    mcdlmsnapshotpolicyDaily = "Yes"
+    minecraftdlmsnapshotpolicyHourly = "Yes"
+    minecraftdlmsnapshotpolicyDaily = "Yes"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_dlm_lifecycle_policy" "minecraft_hourly_dlm" {
     }
 
     target_tags = {
-      mcdlmsnapshotpolicyHourly = "Yes"
+      minecraftdlmsnapshotpolicyHourly = "Yes"
     }
   }
 }
@@ -67,7 +67,7 @@ resource "aws_dlm_lifecycle_policy" "minecraft_daily_dlm" {
     }
 
     target_tags = {
-      mcdlmsnapshotpolicyDaily = "Yes"
+      minecraftdlmsnapshotpolicyDaily = "Yes"
     }
   }
 }
