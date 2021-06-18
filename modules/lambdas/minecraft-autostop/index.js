@@ -1,12 +1,12 @@
 const { EC2 } = require('aws-sdk');
-const http = require('http');
+const https = require('https');
 const ec2 = new EC2();
 
 exports.handler = function (event, context) {
     const instanceId = process.env.instance_id;
     const recordName = process.env.record_name;
 
-    http.get(`https://api.mcsrvstat.us/2/${recordName}`, res => {
+    https.get(`https://api.mcsrvstat.us/2/${recordName}`, res => {
         res.setEncoding("utf8");
         let body = "";
         res.on("data", data => {
