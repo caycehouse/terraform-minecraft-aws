@@ -23,8 +23,9 @@ docker run -d \
     --restart always \
     -p 25565:25565/tcp \
     -v /opt/minecraft:/data \
-    -e EULA="TRUE" \
-    -e MEMORY="6144M" \
-    -e TYPE="SPIGOT" \
-    -e USE_AIKAR_FLAGS="TRUE" \
+    -e EULA=true \
+    -e MEMORY=${mc_memory} \
+    -e TYPE=${mc_type} \
+    -e USE_AIKAR_FLAGS=true \
+    -e FORCE_REDOWNLOAD=true \
     itzg/minecraft-server

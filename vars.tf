@@ -45,14 +45,20 @@ variable "key_name" {
   default     = ""
 }
 
-variable "minecraft_pass" {
-  description = "The password to use for the Minecraft server"
-  type        = string
-  default     = ""
-}
-
 variable "spot_price" {
   description = "The spot price to use"
   type        = string
   default     = "0.05"
+}
+
+variable "mc_memory" {
+  description = "The memory to allocate to java"
+  type        = string
+  default     = "6144M"
+}
+
+variable "mc_type" {
+  description = "The minecraft server type to run"
+  type        = string
+  default     = "VANILLA"
 }
